@@ -1,0 +1,16 @@
+# Installation
+> `npm install --save @types/supertest`
+
+# Summary
+This package contains type definitions for SuperTest (https://github.com/visionmedia/supertest).
+
+# Details
+Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/supertest
+
+Additional Details
+ * Last updated: Mon, 03 Dec 2018 21:41:02 GMT
+ * Dependencies: @types/superagent
+ * Global values: none
+
+# Credits
+These definitions were written by Alex Varju <https://github.com/varju>, Petteri Parkkila <https://github.com/pietu>.
