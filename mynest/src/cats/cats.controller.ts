@@ -2,13 +2,18 @@
 import { Controller, Get, Req ,Headers,Post, HttpCode, Header, Body} from '@nestjs/common';
 import {Request} from 'express';
 
-import {MyD} from '../../decorators/MyD.decorator'
-import {CreateCatDto} from '../../decorators/cat.dto'
-import { create } from 'domain';
+import {MyD} from '../decorators/MyD.decorator'
+import {CreateCatDto} from './dto/cat.dto'
+import {CatsService} from './cat.service'
+import {Cat} from './interfaces/cat.interface'
 
 @Controller('cats')
 //this is the path name, now GET /cats will return the result
 export class CatsController {
+  //incoming service to constructor 
+  constructor(private readonly catsService:CatsService){
+
+  }
   @Get()
   // this decorator tells Nest to create a handler for a http get request 
   findAll(): string {
@@ -46,6 +51,16 @@ export class CatsController {
   @Post('createByDecorator')
   async createByDecorator(@Body() createCatDto:CreateCatDto){
     return `this is adds a new cat,${createCatDto.name} ${createCatDto.age} ${createCatDto.bread}`
+  }
+  //some method based on service
+  @Post('createByService')
+  async createByService(@Body() createCatDto:CreateCatDto){
+    return this.catsService.create(createCatDto)
+  }
+
+  @Get('findAllByService')
+  async findAllByService():Promise<Cat[]>{
+    return this.catsService.findAll()
   }
 
 }
