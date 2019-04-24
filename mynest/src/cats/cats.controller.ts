@@ -10,7 +10,8 @@ import {
   HttpException,
   HttpStatus,
   ForbiddenException,
-  UseFilters
+  UseFilters,
+  UsePipes
 } from "@nestjs/common";
 import { Request } from "express";
 
@@ -19,6 +20,7 @@ import { CreateCatDto } from "./dto/cat.dto";
 import { CatsService } from "./cat.service";
 import { Cat } from "./interfaces/cat.interface";
 import { HttpExceptionFilter } from "src/common/filters/http-exception.filter";
+import { ValidationPipe } from "src/common/pipes/validation.pipe";
 
 @Controller("cats")
 //this is the path name, now GET /cats will return the result
@@ -122,4 +124,12 @@ export class CatsController {
   //     "timestamp": "2019-04-24T03:26:01.095Z",
   //     "path": "/cats/findWithFilter"
   // }
+
+  @Post('createWithPipe')
+  //use pipe to validate data structure and type
+  @UsePipes(new ValidationPipe())
+  async createWithPipe(@Body() createCatDto:CreateCatDto){
+    this.catsService.create(createCatDto)
+    return 'ok'
+  }
 }
