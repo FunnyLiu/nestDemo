@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as _ from 'lodash';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProductEntity } from './product.entity';
 
 import {ProductRO, ProductsRO } from './product.interface';
+import { CreateProjectDto } from './dto';
 
 @Injectable()
 export class ProductService {
@@ -39,5 +41,14 @@ export class ProductService {
     const products = await qb.getMany();
 
     return {products, productsCount};
+  }
+
+  async create(productData: CreateProjectDto): Promise<ProductEntity> {
+    let product = new ProductEntity()
+    product = Object.assign(_.pick(productData, ['name', 'description']))
+
+    const newProduct = await this.productRepository.save(product)
+
+    return newProduct
   }
 }
