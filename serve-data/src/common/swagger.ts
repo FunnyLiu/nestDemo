@@ -1,8 +1,8 @@
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 const options = new DocumentBuilder()
-    .setTitle('NestJS Realworld Example App')
-    .setDescription('The Realworld API description')
+    .setTitle('NestJS serve-data API')
+    .setDescription('The API description')
     .setVersion('1.0')
     .setBasePath('api')
     .addBearerAuth()
