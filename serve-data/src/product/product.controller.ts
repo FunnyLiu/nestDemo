@@ -7,6 +7,8 @@ import {
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
+  ApiImplicitBody,
+  ApiImplicitParam,
 } from '@nestjs/swagger';
 import { CreateProjectDto } from './dto';
 
@@ -33,6 +35,7 @@ export class ProductController {
   }
 
   @ApiOperation({ title: 'Delete product' })
+  @ApiImplicitParam({name:'slug',type:'string',description:'project slug',required:true})
   @ApiResponse({ status: 201, description: 'The product has been successfully deleted.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Delete(':slug')
