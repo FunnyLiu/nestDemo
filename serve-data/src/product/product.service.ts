@@ -47,9 +47,9 @@ export class ProductService {
   async create(productData: CreateProductDto): Promise<ProductEntity> {
     let product = new ProductEntity()
     const { name } = productData
-    if(!productData || !productData.name) {
-      throw new HttpException('name not provided', HttpStatus.BAD_REQUEST)
-    }
+    // if(!productData || !productData.name) {
+    //   throw new HttpException('name not provided', HttpStatus.BAD_REQUEST)
+    // }
 
     //check unique of product.slug and name
     const slug = this.slugify(name)

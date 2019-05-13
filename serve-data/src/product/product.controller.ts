@@ -1,4 +1,4 @@
-import {Get, Post, Body, Put, Delete, Query, Param, Controller} from '@nestjs/common';
+import {Get, Post, Body, Put, Delete, Query, Param, Controller, UsePipes} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductsRO } from './product.interface';
 
@@ -10,6 +10,7 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
@@ -28,6 +29,7 @@ export class ProductController {
   @ApiOperation({ title: 'Create product' })
   @ApiResponse({ status: 201, description: 'The product has been successfully created.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UsePipes(new ValidationPipe())
   @Post()
   async create(@Body() productData:CreateProductDto) {
     return this.productService.create(productData)
@@ -37,9 +39,9 @@ export class ProductController {
   @ApiImplicitParam({name:'slug',type:'string',description:'project slug',required:true})
   @ApiResponse({ status: 201, description: 'The product has been successfully updated.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UsePipes(new ValidationPipe())
   @Put(':slug')
   async update(@Param() params:any, @Body() productData:UpdateProductDto) {
-    console.log(productData)
     return this.productService.update(params.slug, productData) 
   }
 

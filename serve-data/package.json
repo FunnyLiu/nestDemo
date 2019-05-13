@@ -25,6 +25,8 @@
     "@nestjs/platform-express": "^6.0.0",
     "@nestjs/swagger": "^3.0.1",
     "@nestjs/typeorm": "^6.0.0",
+    "class-transformer": "^0.2.2",
+    "class-validator": "^0.9.1",
     "lodash": "^4.17.11",
     "mysql": "^2.15.0",
     "reflect-metadata": "^0.1.12",
