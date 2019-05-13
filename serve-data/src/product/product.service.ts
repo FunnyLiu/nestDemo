@@ -46,10 +46,23 @@ export class ProductService {
   
   async create(productData: CreateProjectDto): Promise<ProductEntity> {
     let product = new ProductEntity()
-    console.log(productData)
+    const { name } = productData
     if(!productData || !productData.name) {
       throw new HttpException('name not provided', HttpStatus.BAD_REQUEST)
     }
+
+    //check unique of product.slug and name
+    const slug = this.slugify(name)
+    const qb = await getRepository(ProductEntity)
+      .createQueryBuilder('product')
+      .where('product.slug = :slug', { slug })
+      .orWhere('product.name = :name', { name })
+    const productOne = await qb.getOne()
+    if (productOne) {
+      const errors = { name: 'name must be unique.' };
+      throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+    }
+
     product = Object.assign(_.pick(productData, ['name', 'description']))
     product.slug = this.slugify(productData.name)
 
