@@ -1,16 +1,15 @@
 import {Get, Post, Body, Put, Delete, Query, Param, Controller} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ProductsRO, ProductRO } from './product.interface';
+import { ProductsRO } from './product.interface';
 
 import {
   ApiUseTags,
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
-  ApiImplicitBody,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { CreateProductDto } from './dto';
+import { CreateProductDto, UpdateProductDto } from './dto';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
@@ -39,7 +38,8 @@ export class ProductController {
   @ApiResponse({ status: 201, description: 'The product has been successfully updated.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Put(':slug')
-  async update(@Param() params, @Body() productData:CreateProductDto) {
+  async update(@Param() params:any, @Body() productData:UpdateProductDto) {
+    console.log(productData)
     return this.productService.update(params.slug, productData) 
   }
 
