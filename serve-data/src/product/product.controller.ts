@@ -10,7 +10,7 @@ import {
   ApiImplicitBody,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { CreateProjectDto } from './dto';
+import { CreateProductDto } from './dto';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
@@ -30,8 +30,17 @@ export class ProductController {
   @ApiResponse({ status: 201, description: 'The product has been successfully created.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
-  async create(@Body() productData:CreateProjectDto) {
+  async create(@Body() productData:CreateProductDto) {
     return this.productService.create(productData)
+  }
+  
+  @ApiOperation({ title: 'Update product' })
+  @ApiImplicitParam({name:'slug',type:'string',description:'project slug',required:true})
+  @ApiResponse({ status: 201, description: 'The product has been successfully updated.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Put(':slug')
+  async update(@Param() params, @Body() productData:CreateProductDto) {
+    return this.productService.update(params.slug, productData) 
   }
 
   @ApiOperation({ title: 'Delete product' })

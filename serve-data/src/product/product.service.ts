@@ -6,7 +6,7 @@ import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProductEntity } from './product.entity';
 
 import {ProductRO, ProductsRO } from './product.interface';
-import { CreateProjectDto } from './dto';
+import { CreateProductDto } from './dto';
 
 @Injectable()
 export class ProductService {
@@ -44,7 +44,7 @@ export class ProductService {
     return {products, productsCount};
   }
   
-  async create(productData: CreateProjectDto): Promise<ProductEntity> {
+  async create(productData: CreateProductDto): Promise<ProductEntity> {
     let product = new ProductEntity()
     const { name } = productData
     if(!productData || !productData.name) {
@@ -69,6 +69,13 @@ export class ProductService {
     const newProduct = await this.productRepository.save(product)
 
     return newProduct
+  }
+
+  async update(slug: string, productData: any): Promise<ProductRO> {
+    const toUpdate = await this.productRepository.findOne({ slug })
+    const updated = Object.assign(toUpdate, productData)
+    const product = await this.productRepository.save(updated)
+    return { product }
   }
 
   async delete(slug: string): Promise<DeleteResult> {
