@@ -7,6 +7,9 @@ export class ProductEntity {
   id: number;
 
   @Column()
+  slug: string;
+
+  @Column()
   name: string;
 
   @Column({default: ''})

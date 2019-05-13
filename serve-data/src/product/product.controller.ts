@@ -8,6 +8,7 @@ import {
   ApiResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { CreateProjectDto } from './dto';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
@@ -21,5 +22,21 @@ export class ProductController {
   @Get()
   async findAll(@Query() query): Promise<ProductsRO> {
     return await this.productService.findAll(query);
+  }
+
+  @ApiOperation({ title: 'Create product' })
+  @ApiResponse({ status: 201, description: 'The product has been successfully created.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Post()
+  async create(@Body() productData:CreateProjectDto) {
+    return this.productService.create(productData)
+  }
+
+  @ApiOperation({ title: 'Delete product' })
+  @ApiResponse({ status: 201, description: 'The product has been successfully deleted.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Delete(':slug')
+  async delete(@Param() params) {
+    return this.productService.delete(params.slug);
   }
 }

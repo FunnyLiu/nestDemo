@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as slug from 'unique-slug'
 import * as _ from 'lodash';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProductEntity } from './product.entity';
@@ -42,13 +43,26 @@ export class ProductService {
 
     return {products, productsCount};
   }
-
+  
   async create(productData: CreateProjectDto): Promise<ProductEntity> {
     let product = new ProductEntity()
+    console.log(productData)
+    if(!productData || !productData.name) {
+      throw new HttpException('name not provided', HttpStatus.BAD_REQUEST)
+    }
     product = Object.assign(_.pick(productData, ['name', 'description']))
+    product.slug = this.slugify(productData.name)
 
     const newProduct = await this.productRepository.save(product)
 
     return newProduct
+  }
+
+  async delete(slug: string): Promise<DeleteResult> {
+    return await this.productRepository.delete({ slug: slug })
+  }
+
+  slugify(str: string) {
+    return slug(str)
   }
 }
