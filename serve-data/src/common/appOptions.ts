@@ -1,3 +1,4 @@
 export const appOptions = {
-  cors: true
+  cors: true,
+  // logger: false
 }

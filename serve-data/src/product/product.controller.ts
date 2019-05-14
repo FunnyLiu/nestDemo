@@ -1,4 +1,4 @@
-import {Get, Post, Body, Put, Delete, Query, Param, Controller, UsePipes, ValidationPipe} from '@nestjs/common';
+import {Get, Post, Body, Put, Delete, Query, Param, Controller, UsePipes, ValidationPipe, Logger} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ProductsRO } from './product.interface';
 
@@ -17,12 +17,18 @@ import { CreateProductDto, UpdateProductDto } from './dto';
 @Controller('products')
 export class ProductController {
 
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService
+  ) {}
+
+
+  private readonly logger = new Logger(ProductController.name)
 
   @ApiOperation({ title: 'Get all products' })
   @ApiResponse({ status: 200, description: 'Return all products.'})
   @Get()
   async findAll(@Query() query): Promise<ProductsRO> {
+    this.logger.log(`Get all products: ${JSON.stringify(query)}`)
     return await this.productService.findAll(query);
   }
 
@@ -32,6 +38,7 @@ export class ProductController {
   @UsePipes(new ValidationPipe({whitelist: true,forbidNonWhitelisted: true }))
   @Post()
   async create(@Body() productData:CreateProductDto) {
+    this.logger.log(`Create product: ${JSON.stringify(productData)}`)
     return this.productService.create(productData)
   }
   
