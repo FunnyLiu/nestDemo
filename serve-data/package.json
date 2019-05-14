@@ -24,10 +24,12 @@
     "stop:pm2": "pm2 stop serve-data-prod"
   },
   "dependencies": {
+    "@godaddy/terminus": "^4.1.0",
     "@nestjs/common": "^6.0.0",
     "@nestjs/core": "^6.0.0",
     "@nestjs/platform-express": "^6.0.0",
     "@nestjs/swagger": "^3.0.1",
+    "@nestjs/terminus": "^6.1.4",
     "@nestjs/typeorm": "^6.0.0",
     "class-transformer": "^0.2.2",
     "class-validator": "^0.9.1",
