@@ -12,6 +12,7 @@
     "start:debug": "nodemon --config nodemon-debug.json",
     "prestart:prod": "rimraf dist && npm run build",
     "start:prod": "cross-env NODE_ENV=production node dist/main.js",
+    "docs": "compodoc -p tsconfig.json -s",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -40,6 +41,7 @@
     "unique-slug": "^2.0.1"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.9",
     "@nestjs/testing": "^6.0.0",
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.13",
