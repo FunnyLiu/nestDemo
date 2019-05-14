@@ -8,6 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, appOptions);
   app.setGlobalPrefix('api');
   initSwagger(app)
+  // await createOrmConnect()
 
   await app.listen(3000);
 }
