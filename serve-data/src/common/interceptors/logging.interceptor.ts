@@ -8,7 +8,8 @@ export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name)
   
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const info = `${context.getClass().name} ${context.getHandler().name}`
+    const request = context.switchToHttp().getRequest()
+    const info = `${context.getClass().name} ${request.url} ${JSON.stringify(request.body)}`
     this.logger.log(`BGN ${info}`)
     
     const now = Date.now();

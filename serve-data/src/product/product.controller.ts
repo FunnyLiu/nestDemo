@@ -29,8 +29,6 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Return all products.'})
   @Get()
   async findAll(@Query() query): Promise<ProductsRO> {
-    //use logger
-    this.logger.log(`findAll products: ${JSON.stringify(query)}`)
     return await this.productService.findAll(query);
   }
 
