@@ -10,12 +10,9 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
-import { TimeoutInterceptor } from 'src/common/interceptors/timeout.interceptor';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
-@UseInterceptors(LoggingInterceptor)
 @Controller('products')
 export class ProductController {
 
@@ -30,6 +27,8 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Return all products.'})
   @Get()
   async findAll(@Query() query): Promise<ProductsRO> {
+    //use logger
+    this.logger.log(`findAll products: ${JSON.stringify(query)}`)
     return await this.productService.findAll(query);
   }
 
@@ -39,8 +38,6 @@ export class ProductController {
   @UsePipes(new ValidationPipe({whitelist: true,forbidNonWhitelisted: true }))
   @Post()
   async create(@Body() productData:CreateProductDto) {
-    // use logger
-    this.logger.log(`Create product: ${JSON.stringify(productData)}`)
     return this.productService.create(productData)
   }
   

@@ -4,6 +4,7 @@ import { appOptions } from './common/appOptions';
 import { initSwagger } from './common/swagger';
 import { AppLogger } from './logger/logger.service';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   
@@ -11,6 +12,7 @@ async function bootstrap() {
   //not enabled temporarily, and will be used again when it needs to be unified in the future.
   // app.useLogger(app.get(AppLogger))
   app.useGlobalInterceptors(new TimeoutInterceptor())
+  app.useGlobalInterceptors(new LoggingInterceptor())
 
   app.setGlobalPrefix('api');
   initSwagger(app)

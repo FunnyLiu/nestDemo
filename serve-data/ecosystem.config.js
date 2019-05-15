@@ -16,7 +16,7 @@ module.exports = {
       NODE_ENV: 'production'
     }
   }],
-
+  log: true,
   deploy : {
     production : {
       user : 'node',
