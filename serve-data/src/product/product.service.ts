@@ -23,7 +23,7 @@ export class ProductService {
     qb.where("1 = 1");
 
     if ('name' in query) {
-      qb.andWhere("product.name LIKE :name", { tag: `%${query.name}%` });
+      qb.andWhere("product.name LIKE :name", { name: `%${query.name}%` });
     }
 
 

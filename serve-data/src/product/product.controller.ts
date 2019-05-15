@@ -8,6 +8,7 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { CreateProductDto, UpdateProductDto } from './dto';
 
@@ -24,6 +25,7 @@ export class ProductController {
   private readonly logger = new Logger(ProductController.name)
 
   @ApiOperation({ title: 'Get all products' })
+  @ApiImplicitQuery({ name:'name', type: 'string', description:'product name',required: false})
   @ApiResponse({ status: 200, description: 'Return all products.'})
   @Get()
   async findAll(@Query() query): Promise<ProductsRO> {
