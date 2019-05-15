@@ -7,6 +7,8 @@ import { ProductEntity } from './product.entity';
 
 import {ProductRO, ProductsRO } from './product.interface';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { WarnException } from 'src/common/exceptions/warn.exception';
+import { ErrorException } from 'src/common/exceptions/error.execption';
 
 @Injectable()
 export class ProductService {
@@ -59,8 +61,8 @@ export class ProductService {
       .orWhere('product.name = :name', { name })
     const productOne = await qb.getOne()
     if (productOne) {
-      const errors = { name: 'name must be unique.' };
-      throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+      // throw new HttpException( 'name must be unique', HttpStatus.BAD_REQUEST);
+      throw new ErrorException('name must be unique');
     }
 
     product = Object.assign(_.pick(productData, ['name', 'description']))

@@ -5,6 +5,8 @@ import { initSwagger } from './common/swagger';
 import { AppLogger } from './logger/logger.service';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   
@@ -13,6 +15,9 @@ async function bootstrap() {
   // app.useLogger(app.get(AppLogger))
   app.useGlobalInterceptors(new TimeoutInterceptor())
   app.useGlobalInterceptors(new LoggingInterceptor())
+  app.useGlobalInterceptors(new TransformInterceptor())
+
+  app.useGlobalFilters(new HttpExceptionFilter())
 
   app.setGlobalPrefix('api');
   initSwagger(app)
