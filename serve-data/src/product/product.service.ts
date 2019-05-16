@@ -7,8 +7,7 @@ import { ProductEntity } from './product.entity';
 
 import {ProductRO, ProductsRO } from './product.interface';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { WarnException } from 'src/common/exceptions/warn.exception';
-import { ErrorException } from 'src/common/exceptions/error.execption';
+import { ErrorException } from '../common/exceptions/error.execption';
 
 @Injectable()
 export class ProductService {

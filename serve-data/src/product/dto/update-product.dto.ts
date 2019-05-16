@@ -1,5 +1,5 @@
 import { ApiModelProperty } from "@nestjs/swagger";
-import { Allow } from ".0.9.1@class-validator";
+import { Allow } from "class-validator";
 
 export class UpdateProductDto {
 
