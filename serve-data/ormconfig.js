@@ -7,5 +7,6 @@ module.exports = {
     "password": "rootroot",
     "database": "servedata",
     "entities": [`${dir}/**/**.entity{.ts,.js}`],
-    "synchronize": true
+    "synchronize": true,
+    "charset": "UTF8_GENERAL_CI"
 }
