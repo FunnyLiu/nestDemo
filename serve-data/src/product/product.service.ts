@@ -41,7 +41,6 @@ export class ProductService {
     }
 
     const products = await qb.getMany();
-
     return {products, productsCount};
   }
   
