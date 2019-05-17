@@ -1,0 +1,1 @@
+export const REDIS_CACHE = 'redis_cache'

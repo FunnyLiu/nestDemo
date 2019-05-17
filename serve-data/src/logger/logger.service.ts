@@ -1,5 +1,6 @@
 import { LoggerService } from "@nestjs/common";
 import { createLogger, format, transports} from 'winston'
+import { LOG_LABEL } from "./logger.constants";
 const { combine, timestamp, label, printf } = format
 
 export class AppLogger implements LoggerService {
@@ -7,7 +8,7 @@ export class AppLogger implements LoggerService {
   constructor() {
     this.logger = createLogger({
       format: combine(
-        label({ label: 'serve-data'}),
+        label({ label: LOG_LABEL}),
         timestamp(),
         this.myFormat()
       ),

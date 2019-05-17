@@ -5,11 +5,13 @@ import { Connection } from 'typeorm';
 import { ProductModule } from './product/product.module';
 import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
     HealthModule,
+    RedisModule,
     LoggerModule,
     ProductModule
   ],
