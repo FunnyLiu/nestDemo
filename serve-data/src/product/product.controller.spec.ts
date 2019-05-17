@@ -9,7 +9,7 @@ describe('ProductController',()=>{
   let productController: ProductController
   let productService: ProductService
 
-  beforeEach(async ()=>{
+  beforeAll(async ()=>{
     const module = await Test.createTestingModule({
       imports: [TypeOrmModule.forRoot(), TypeOrmModule.forFeature([ProductEntity])],
       controllers:[ProductController],
@@ -21,7 +21,7 @@ describe('ProductController',()=>{
   })
 
   describe('findAll',()=>{
-    it('should return products info',async ()=>{
+    test('should return products info',async ()=>{
       const data = {
         products:[
           
@@ -33,21 +33,21 @@ describe('ProductController',()=>{
       expect(await productController.findAll(undefined)).toBe(await result)
     })
   })
-  //error with database connect
-//   describe('create',()=>{
-//     it('should return the created product info',async ()=>{
-//       const data = {
-//           id:1,
-//           slug:'hehe',
-//           description:'hsfasd',
-//           name:'hehe',
-//           created:new Date(),
-//           updateTimestamp:void 0,
-//           updated:new Date()
-//       }
-//       const result:Promise<ProductEntity> = Promise.resolve(data)
-//       jest.spyOn(productService, 'create').mockImplementation(()=>result)
-//       expect(await productController.create(undefined)).toBe(await result)
-//     })
-//   })
+
+  describe('create', ()=>{
+    test('should return the created product info',async ()=>{
+        const data = {
+            id:1,
+            slug:'hehe',
+            description:'xixi',
+            name:'hehe',
+            created:new Date(),
+            updateTimestamp:void 0,
+            updated:new Date()
+        }
+        const result:Promise<ProductEntity> = Promise.resolve(data)
+        jest.spyOn(productService, 'create').mockImplementation(()=>result)
+        expect(await productController.create({name:'hehe',description:'xixi'})).toBe(await result)
+      })
+  })
 })
