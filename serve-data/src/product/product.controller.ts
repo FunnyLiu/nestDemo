@@ -11,6 +11,7 @@ import {
   ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { CreateProductDto, UpdateProductDto } from './dto';
+import { RedisService } from '@/redis/redis.service';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
@@ -18,7 +19,8 @@ import { CreateProductDto, UpdateProductDto } from './dto';
 export class ProductController {
 
   constructor(
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
+    private readonly redisService: RedisService
   ) {}
 
 
@@ -29,6 +31,9 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Return all products.'})
   @Get()
   async findAll(@Query() query): Promise<ProductsRO> {
+    //use redis
+    // await this.redisService.set('foo','hehe')
+    // console.log(await this.redisService.get('foo'))
     return await this.productService.findAll(query);
   }
 
