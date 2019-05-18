@@ -11,7 +11,7 @@ import {
   ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { RedisService } from '@/redis/redis.service';
+// import { RedisService } from '@/redis/redis.service';
 
 @ApiBearerAuth()
 @ApiUseTags('products')
@@ -20,7 +20,7 @@ export class ProductController {
 
   constructor(
     private readonly productService: ProductService,
-    private readonly redisService: RedisService
+    // private readonly redisService: RedisService
   ) {}
 
 

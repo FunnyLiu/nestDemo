@@ -6,7 +6,10 @@ import { ProductService } from './product.service';
 import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductEntity]),RedisModule],
+  imports: [
+    TypeOrmModule.forFeature([ProductEntity]),
+    // RedisModule
+  ],
   providers: [ProductService],
   controllers: [
     ProductController

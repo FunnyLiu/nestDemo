@@ -11,7 +11,7 @@ import { RedisModule } from './redis/redis.module';
   imports: [
     TypeOrmModule.forRoot(),
     HealthModule,
-    RedisModule,
+    // RedisModule,
     LoggerModule,
     ProductModule
   ],
