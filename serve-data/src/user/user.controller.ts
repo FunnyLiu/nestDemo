@@ -53,7 +53,7 @@ export class UserController {
     @ApiOperation({title: 'Delete user'})
     @ApiImplicitParam({name:'slug',type:'string'})
     @Delete('users/:slug')
-    async delete(@Param() params) {
+    async delete(@Param() params:any) {
         console.log(params.slug)
         return await this.userService.delete(params.slug);
     }
