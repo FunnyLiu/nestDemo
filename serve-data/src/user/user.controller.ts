@@ -15,6 +15,7 @@ import {
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
 import { CreateUserBody } from './dto/create-user.dto';
 import { UpdateUserBody } from './dto/update-user.dto';
+import { LoginUserBody } from './dto/login-user.dto';
 // import { ValidationPipe } from '@/common/pipes/validation.pipe';
 
 @ApiBearerAuth()
@@ -57,6 +58,9 @@ export class UserController {
         return await this.userService.delete(params.slug);
     }
 
+
+    @ApiOperation({title: 'Login'})
+    @ApiImplicitBody({name:'user',type:LoginUserBody})
     @UsePipes(new ValidationPipe())
     @Post('users/login')
     async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
