@@ -3,8 +3,9 @@ import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { SECRET } from '../config';
 import { UserService } from './user.service';
+import { SECRET } from './user.constants';
+import { ForbiddenException } from '@/common/exceptions/forbidden.exception';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -18,14 +19,14 @@ export class AuthMiddleware implements NestMiddleware {
       const user = await this.userService.findById(decoded.id);
 
       if (!user) {
-        throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED);
+        throw new ForbiddenException(`User not found`)
       }
 
       req.user = user.user;
       next();
 
     } else {
-      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+      throw new ForbiddenException(`User not found`)
     }
   }
 }
