@@ -32,7 +32,6 @@ export class UserService {
     }
 
     async create(dto: CreateUserDto): Promise<UserRO> {
-
         // check uniqueness of username/email
         const { username, email, password } = dto;
         const qb = await getRepository(UserEntity)
@@ -87,6 +86,11 @@ export class UserService {
 
     async findByEmail(email: string): Promise<UserRO> {
         const user = await this.userRepository.findOne({ email: email });
+
+        if (!user) {
+            throw new UnhandleException(`not found`);
+        };
+
         return this.buildUserRO(user);
     }
 

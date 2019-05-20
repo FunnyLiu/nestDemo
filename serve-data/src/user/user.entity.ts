@@ -10,10 +10,10 @@ export class UserEntity {
     @Column()
     username: string;
 
-    @Column()
+    @Column({default: ''})
     nickname: string;
 
-    @Column()
+    @Column({default: ''})
     fullname: string;
 
     @Column()

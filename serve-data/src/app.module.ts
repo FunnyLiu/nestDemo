@@ -6,6 +6,7 @@ import { ProductModule } from './product/product.module';
 import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
 import { RedisModule } from './redis/redis.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RedisModule } from './redis/redis.module';
     HealthModule,
     // RedisModule,
     LoggerModule,
+    UserModule,
     ProductModule
   ],
   controllers: [

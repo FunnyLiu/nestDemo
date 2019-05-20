@@ -1,3 +1,5 @@
+import { CreateUserDto } from "./dto";
+
 export interface UserData {
   username: string;
   email: string;

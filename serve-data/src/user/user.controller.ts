@@ -1,16 +1,20 @@
-import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes } from '@nestjs/common';
+import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
 
 import {
     ApiUseTags,
-    ApiBearerAuth
+    ApiBearerAuth,
+    ApiOperation,
+    ApiImplicitQuery,
+    ApiImplicitParam,
+    ApiImplicitBody
 } from '@nestjs/swagger';
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
-import { ValidationPipe } from '@/common/pipes/validation.pipe';
+import { CreateUserBody } from './dto/create-user.dto';
+// import { ValidationPipe } from '@/common/pipes/validation.pipe';
 
 @ApiBearerAuth()
 @ApiUseTags('user')
@@ -19,6 +23,8 @@ export class UserController {
 
     constructor(private readonly userService: UserService) { }
 
+    @ApiOperation({ title: 'Get one user by email'})
+    @ApiImplicitQuery({ name: 'email', type: 'string', description:'users email'})
     @Get('user')
     async findMe(@User('email') email: string): Promise<UserRO> {
         return await this.userService.findByEmail(email);
@@ -29,7 +35,9 @@ export class UserController {
         return await this.userService.update(userId, userData);
     }
 
-    @UsePipes(new ValidationPipe())
+    @ApiOperation({ title: 'Create user'})
+    @ApiImplicitBody({name:'user',type:CreateUserBody})
+    @UsePipes(new ValidationPipe({whitelist: true,forbidNonWhitelisted: true }))
     @Post('users')
     async create(@Body('user') userData: CreateUserDto) {
         return this.userService.create(userData);
