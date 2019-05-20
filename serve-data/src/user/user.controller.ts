@@ -1,4 +1,4 @@
-import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
@@ -14,6 +14,7 @@ import {
 } from '@nestjs/swagger';
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
 import { CreateUserBody } from './dto/create-user.dto';
+import { UpdateUserBody } from './dto/update-user.dto';
 // import { ValidationPipe } from '@/common/pipes/validation.pipe';
 
 @ApiBearerAuth()
@@ -26,10 +27,15 @@ export class UserController {
     @ApiOperation({ title: 'Get one user by email'})
     @ApiImplicitQuery({ name: 'email', type: 'string', description:'users email'})
     @Get('user')
-    async findMe(@User('email') email: string): Promise<UserRO> {
+    // async findMe(@User('email') email: string): Promise<UserRO> {
+    async findMe(@Query('email') email: string): Promise<UserRO> {
         return await this.userService.findByEmail(email);
     }
 
+    @ApiOperation({ title: 'Update on user by id'})
+    @ApiImplicitQuery({name:'id',type:'number'})
+    @ApiImplicitBody({name:'user',type:UpdateUserBody})
+    @UsePipes(new ValidationPipe({whitelist: true,forbidNonWhitelisted: true }))
     @Put('user')
     async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
         return await this.userService.update(userId, userData);
@@ -43,8 +49,11 @@ export class UserController {
         return this.userService.create(userData);
     }
 
+    @ApiOperation({title: 'Delete user'})
+    @ApiImplicitParam({name:'slug',type:'string'})
     @Delete('users/:slug')
     async delete(@Param() params) {
+        console.log(params.slug)
         return await this.userService.delete(params.slug);
     }
 

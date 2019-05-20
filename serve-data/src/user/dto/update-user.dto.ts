@@ -7,3 +7,8 @@ export class UpdateUserDto {
   @Allow()
   readonly username: string;
 }
+
+export class UpdateUserBody {
+  @ApiModelProperty()
+  user: UpdateUserDto
+}
