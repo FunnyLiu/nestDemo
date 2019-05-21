@@ -27,7 +27,7 @@ export class UserController {
 
     constructor(private readonly userService: UserService) { }
 
-    @ApiOperation({ title: 'Get user itself by email'})
+    @ApiOperation({ title: 'Get your user itself by email'})
     @ApiImplicitQuery({ name: 'email', type: 'string', description:'users email'})
     @Get('user')
     // async findMe(@User('email') email: string): Promise<UserRO> {
