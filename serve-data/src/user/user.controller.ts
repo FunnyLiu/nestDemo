@@ -30,8 +30,7 @@ export class UserController {
     @ApiOperation({ title: 'Get own user info by email'})
     @ApiImplicitQuery({ name: 'email', type: 'string', description:'users email'})
     @Get('user')
-    // async findMe(@User('email') email: string): Promise<UserRO> {
-    async findMe(@Query('email') email: string): Promise<UserRO|boolean> {
+    async findMe(@User('email') email: string): Promise<UserRO|boolean> {
         const result =  await this.userService.findByEmail(email);
         if(result){
             return result;
