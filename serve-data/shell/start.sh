@@ -1,1 +1,1 @@
-git pull & npm run start:pm2
+npm run stop:pm2 && git pull && npm run start:pm2
