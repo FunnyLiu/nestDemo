@@ -1,1 +1,1 @@
-npm run stop:pm2 & git pull & npm run start:pm2
+pm2 stop serve-data-prod & git pull & pm2 start --env production
