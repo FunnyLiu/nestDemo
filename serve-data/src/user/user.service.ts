@@ -84,11 +84,11 @@ export class UserService {
         return this.buildUserRO(user);
     }
 
-    async findByEmail(email: string): Promise<UserRO> {
+    async findByEmail(email: string): Promise<UserRO|false> {
         const user = await this.userRepository.findOne({ email: email });
 
         if (!user) {
-            throw new UnhandleException(`not found`);
+            return false;
         };
 
         return this.buildUserRO(user);

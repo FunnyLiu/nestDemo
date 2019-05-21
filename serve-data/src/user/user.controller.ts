@@ -1,6 +1,7 @@
 import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes, ValidationPipe, Query } from '@nestjs/common';
+import * as _ from 'lodash'
 import { UserService } from './user.service';
-import { UserRO } from './user.interface';
+import { UserRO, UserCommonDataRO } from './user.interface';
 import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
 import { User } from './user.decorator';
 
@@ -16,6 +17,7 @@ import { UnhandleException } from '@/common/exceptions/unhandle.exception';
 import { CreateUserBody } from './dto/create-user.dto';
 import { UpdateUserBody } from './dto/update-user.dto';
 import { LoginUserBody } from './dto/login-user.dto';
+import { AnyNaptrRecord } from 'dns';
 // import { ValidationPipe } from '@/common/pipes/validation.pipe';
 
 @ApiBearerAuth()
@@ -25,12 +27,18 @@ export class UserController {
 
     constructor(private readonly userService: UserService) { }
 
-    @ApiOperation({ title: 'Get one user by email'})
+    @ApiOperation({ title: 'Get user itself by email'})
     @ApiImplicitQuery({ name: 'email', type: 'string', description:'users email'})
     @Get('user')
     // async findMe(@User('email') email: string): Promise<UserRO> {
-    async findMe(@Query('email') email: string): Promise<UserRO> {
-        return await this.userService.findByEmail(email);
+    async findMe(@Query('email') email: string): Promise<UserRO|boolean> {
+        const result =  await this.userService.findByEmail(email);
+        if(result){
+            return result;
+        } else {
+            throw new UnhandleException(`not found`);
+        }
+
     }
 
     @ApiOperation({ title: 'Update on user by id'})
@@ -40,6 +48,20 @@ export class UserController {
     @Put('user')
     async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
         return await this.userService.update(userId, userData);
+    }
+
+    @ApiOperation({ title: 'Get one user by email'})
+    @ApiImplicitQuery({ name: 'email', type: 'string', description:'users email'})
+    @Get('users')
+    async find(@Query('email') email: string): Promise<UserCommonDataRO|false> {
+        const result =  await this.userService.findByEmail(email);
+        let response:any = {}
+        if(result){
+            response.user = Object.assign(_.pick(result.user, ['email']))
+            return response
+        }else{
+            return false
+        }
     }
 
     @ApiOperation({ title: 'Create user'})

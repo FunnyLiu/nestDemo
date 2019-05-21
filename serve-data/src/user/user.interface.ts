@@ -6,6 +6,15 @@ export interface UserData {
   token: string;
 }
 
+export interface UserCommonData {
+  email: string
+}
+
+
 export interface UserRO {
   user: UserData;
+}
+
+export interface UserCommonDataRO {
+  user: UserCommonData
 }
