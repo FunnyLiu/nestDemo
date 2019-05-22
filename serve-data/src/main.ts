@@ -1,4 +1,5 @@
-require('module-alias/register')
+const moduleAlias = require('module-alias')
+moduleAlias.addAlias('@',__dirname)
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { appOptions } from './common/appOptions';
@@ -22,6 +23,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   initSwagger(app)
-  await app.listen(80);
+  await app.listen(AppModule.port)
 }
 bootstrap();

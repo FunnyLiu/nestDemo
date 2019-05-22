@@ -7,11 +7,14 @@ import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
 import { RedisModule } from './redis/redis.module';
 import { UserModule } from './user/user.module';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
     HealthModule,
+    ConfigModule,
     // RedisModule,
     LoggerModule,
     UserModule,
@@ -23,5 +26,13 @@ import { UserModule } from './user/user.module';
   providers: []
 })
 export class AppModule {
-  constructor(private readonly connection: Connection) {}
+  public static port: number
+  
+  constructor(
+    private readonly connection: Connection,
+    private readonly config: ConfigService
+    ) {
+      AppModule.port = config.getPort()
+    }
+  
 }
