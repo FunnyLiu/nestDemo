@@ -17,7 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       code = message.errorCode
       message = message.message
     }
-    this.logger.error(request.url)
+    this.logger.error(`ERR ${request.url}`)
     this.logger.error(message)
 
     response
