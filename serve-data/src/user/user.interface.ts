@@ -1,4 +1,5 @@
 import { CreateUserDto } from "./dto";
+import { UserEntity } from "./user.entity";
 
 export interface UserData {
   username: string;
@@ -17,4 +18,9 @@ export interface UserRO {
 
 export interface UserCommonDataRO {
   user: UserCommonData
+}
+
+export interface UsersRO {
+  users: UserEntity[],
+  usersCount: number
 }

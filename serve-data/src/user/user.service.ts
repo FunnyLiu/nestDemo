@@ -5,7 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./user.entity";
 import { Repository, getRepository, DeleteResult } from "typeorm";
 import { LoginUserDto, CreateUserDto, UpdateUserDto } from "./dto";
-import { UserRO } from './user.interface';
+import { UserRO, UsersRO } from './user.interface';
 import { WarnException } from '@/common/exceptions/warn.exception';
 import { SECRET } from './user.constants';
 import { validate } from 'class-validator';
@@ -22,8 +22,29 @@ export class UserService {
         private readonly roleRepository: Repository<RoleEntity>
     ) { }
 
-    async findAll(): Promise<UserEntity[]> {
-        return await this.userRepository.find()
+    async findAll(query: any = {}): Promise<UsersRO> {
+        const qb = await getRepository(UserEntity)
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.roles', 'roles')
+        qb.where("1 = 1");
+        if ('email' in query) {
+            qb.andWhere("user.email LIKE :email", { email: `%${query.email}%` });
+        }
+
+        qb.orderBy('user.created', 'DESC');
+
+        const usersCount = await qb.getCount();
+
+        if ('limit' in query) {
+            qb.limit(query.limit);
+        }
+
+        if ('offset' in query) {
+            qb.offset(query.offset);
+        }
+
+        const users = await qb.getMany();
+        return { users, usersCount };
     }
     /**
      * find one user by email and passpord
@@ -119,24 +140,29 @@ export class UserService {
         let today = new Date();
         let exp = new Date(today);
         exp.setDate(today.getDate() + 60);
+        let roles = []
 
+        if (user.roles) {
+            roles = user.roles;
+        }
         return jwt.sign({
             id: user.id,
             username: user.username,
             email: user.email,
+            roles: roles,
             exp: exp.getTime() / 1000,
         }, SECRET);
     };
 
     private buildUserRO(user: UserEntity) {
-        let userRO:any = {
+        let userRO: any = {
             username: user.username,
             email: user.email,
             token: this.generateJWT(user)
         };
-        if(user.roles){
+        if (user.roles) {
             userRO.roles = []
-            user.roles.forEach(v=>{
+            user.roles.forEach(v => {
                 userRO.roles.push(v.name)
             })
         }
