@@ -1,8 +1,10 @@
-import { ApiBearerAuth, ApiUseTags, ApiOperation, ApiImplicitBody } from "@nestjs/swagger";
-import { Controller, Body, UsePipes, ValidationPipe, Post } from "@nestjs/common";
+import { ApiBearerAuth, ApiUseTags, ApiOperation, ApiImplicitBody, ApiImplicitQuery } from "@nestjs/swagger";
+import { Controller, Body, UsePipes, ValidationPipe, Post, Put, Param, Query, Get } from "@nestjs/common";
 import { RoleService } from "./role.service";
 import { CreateRoleDto } from "./dto";
 import { CreateRoleBody } from "./dto/create-role.dto";
+import { UpdateRoleBody, UpdateRoleDto } from "./dto/update-role.dto";
+import { RoleRO, RolesRO } from "./role.interface";
 
 @ApiBearerAuth()
 @ApiUseTags('role')
@@ -18,5 +20,24 @@ export class RoleController {
     @Post('role')
     async create(@Body('role') roleData: CreateRoleDto){
         return this.roleService.createRole(roleData)
+    }
+
+    @ApiOperation({ title: 'Update Role Info by id'})
+    @ApiImplicitQuery({name:'id',type:'number'})
+    @ApiImplicitBody({name:'role',type:UpdateRoleBody})
+    @UsePipes(new ValidationPipe({whitelist: true,forbidNonWhitelisted: true }))
+    @Put('role')
+    async update(@Query('id') roleId: number, @Body('role') roleData: UpdateRoleDto) {
+        return await this.roleService.updateRole(roleId, roleData);
+    }
+
+    @ApiOperation({ title: 'Get all Roles' })
+    @ApiImplicitQuery({ name:'name', type: 'string', description:'product name',required: false})
+    @Get()
+    async findAll(@Query() query): Promise<RolesRO> {
+      //use redis
+      // await this.redisService.set('foo','hehe')
+      // console.log(await this.redisService.get('foo'))
+      return await this.roleService.findAllRoles(query);
     }
 }
