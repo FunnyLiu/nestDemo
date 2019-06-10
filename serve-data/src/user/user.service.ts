@@ -25,14 +25,20 @@ export class UserService {
     async findAll(): Promise<UserEntity[]> {
         return await this.userRepository.find()
     }
-
+    /**
+     * find one user by email and passpord
+     * @param {LoginUserDto} loginUserDto 
+     */
     async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
         const findOneOptions = {
             email: loginUserDto.email,
             password: crypto.createHmac('sha256', loginUserDto.password).digest('hex'),
         };
-
-        return await this.userRepository.findOne(findOneOptions);
+        return await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.roles', 'roles')
+            .where('user.email = :email', { email: findOneOptions.email })
+            .andWhere('user.password = :password', { password: findOneOptions.password })
+            .getOne()
     }
 
     async create(dto: CreateUserDto): Promise<UserRO> {
@@ -89,8 +95,10 @@ export class UserService {
     }
 
     async findByEmail(email: string): Promise<UserRO | false> {
-        const user = await this.userRepository.findOne({ email: email });
-
+        const user = await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.roles', 'roles')
+            .where('user.email = :email', { email: email })
+            .getOne()
         if (!user) {
             return false;
         };
@@ -121,11 +129,19 @@ export class UserService {
     };
 
     private buildUserRO(user: UserEntity) {
-        const userRO = {
+        let userRO:any = {
             username: user.username,
             email: user.email,
             token: this.generateJWT(user)
         };
+        if(user.roles){
+            userRO.roles = []
+            user.roles.forEach(v=>{
+                userRO.roles.push(v.name)
+            })
+        }
+
+
 
         return { user: userRO };
     }
@@ -161,9 +177,9 @@ export class UserService {
             throw new WarnException('user id is not exists')
         }
         user.roles = user.roles || []
-        if(!user.roles.some(v=>{
+        if (!user.roles.some(v => {
             return v.id == role.id
-        })){
+        })) {
             throw new WarnException('role id is not in user roles')
         }
         let newRoles = user.roles.filter(v => {

@@ -99,8 +99,17 @@ export class UserController {
         if (!_user) throw new UnhandleException(`not found`)
 
         const token = await this.userService.generateJWT(_user);
-        const { email, username } = _user;
-        const user = { email, token, username };
+        const { email, username, roles } = _user;
+        let rolesList = [];
+        roles.forEach(v=>{
+            rolesList.push(v.name)
+        })
+        const user = { 
+            email, 
+            token, 
+            username,
+            roles: rolesList
+        };
         return { user }
     }
 }
