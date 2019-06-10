@@ -8,6 +8,7 @@ import { RoleEntity } from './role.entity';
 import { PermissionEntity } from './permission.entity';
 import { RoleService } from './role.service';
 import { EntityCheckService } from '@/common/service/entity-chekc.service';
+import { RoleController } from './role.controller';
 
 @Module({
     imports: [TypeOrmModule.forFeature([
@@ -21,7 +22,8 @@ import { EntityCheckService } from '@/common/service/entity-chekc.service';
         EntityCheckService
     ],
     controllers: [
-        UserController
+        UserController,
+        RoleController
     ],
     exports: [UserService]
 })
