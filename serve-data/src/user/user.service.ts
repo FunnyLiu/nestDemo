@@ -10,12 +10,16 @@ import { WarnException } from '@/common/exceptions/warn.exception';
 import { SECRET } from './user.constants';
 import { validate } from 'class-validator';
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
+import { RoleEntity } from './role.entity';
+import { UpdateUserRoleDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>
+        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(RoleEntity)
+        private readonly roleRepository: Repository<RoleEntity>
     ) { }
 
     async findAll(): Promise<UserEntity[]> {
@@ -84,7 +88,7 @@ export class UserService {
         return this.buildUserRO(user);
     }
 
-    async findByEmail(email: string): Promise<UserRO|false> {
+    async findByEmail(email: string): Promise<UserRO | false> {
         const user = await this.userRepository.findOne({ email: email });
 
         if (!user) {
@@ -92,6 +96,14 @@ export class UserService {
         };
 
         return this.buildUserRO(user);
+    }
+
+    async setRoleForUser(userId: number, method: 'add' | 'delete', roleData: UpdateUserRoleDto) {
+        if (method == 'add') {
+            await this.addRoleForUser(userId, roleData)
+        } else {
+            await this.deleteRoleForUser(userId, roleData)
+        }
     }
 
 
@@ -117,4 +129,48 @@ export class UserService {
 
         return { user: userRO };
     }
+
+
+    private async addRoleForUser(userId: number, roleData: UpdateUserRoleDto) {
+        const user = await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.roles', 'roles')
+            .where('user.id = :id', { id: userId })
+            .getOne()
+        const role = await this.roleRepository.findOne({ id: roleData.roleId })
+        if (!role) {
+            throw new WarnException('role id is not exists')
+        }
+        if (!user) {
+            throw new WarnException('user id is not exists')
+        }
+        user.roles = user.roles || []
+        user.roles.push(role)
+        await this.userRepository.save(user)
+    }
+
+    private async deleteRoleForUser(userId: number, roleData: UpdateUserRoleDto) {
+        const user = await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.roles', 'roles')
+            .where('user.id = :id', { id: userId })
+            .getOne()
+        const role = await this.roleRepository.findOne({ id: roleData.roleId })
+        if (!role) {
+            throw new WarnException('role id is not exists')
+        }
+        if (!user) {
+            throw new WarnException('user id is not exists')
+        }
+        user.roles = user.roles || []
+        if(!user.roles.some(v=>{
+            return v.id == role.id
+        })){
+            throw new WarnException('role id is not in user roles')
+        }
+        let newRoles = user.roles.filter(v => {
+            return v.id != role.id
+        })
+        user.roles = newRoles
+        await this.userRepository.save(user)
+    }
+
 }

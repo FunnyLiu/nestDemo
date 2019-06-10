@@ -15,7 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
 import { CreateUserBody } from './dto/create-user.dto';
-import { UpdateUserBody } from './dto/update-user.dto';
+import { UpdateUserBody, UpdateUserRoleDto, UpdateUserRoleBody } from './dto/update-user.dto';
 import { LoginUserBody } from './dto/login-user.dto';
 import { AnyNaptrRecord } from 'dns';
 // import { ValidationPipe } from '@/common/pipes/validation.pipe';
@@ -47,6 +47,15 @@ export class UserController {
     @Put('user')
     async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
         return await this.userService.update(userId, userData);
+    }
+
+    @ApiOperation({ title: 'update role for user'})
+    @ApiImplicitQuery({name:'id',type:'number'})
+    @ApiImplicitBody({name:'role',type:UpdateUserRoleBody})
+    @UsePipes(new ValidationPipe({whitelist: true,forbidNonWhitelisted: true }))
+    @Put('user/role')
+    async updateUserRole(@Query('id') userId: number,@Query('method') method:'add'|'delete', @Body('role') roleData:UpdateUserRoleDto){
+        const data = await this.userService.setRoleForUser(userId,method,roleData)
     }
 
     @ApiOperation({ title: 'Get one user by email'})

@@ -32,12 +32,11 @@ export class RoleController {
     }
 
     @ApiOperation({ title: 'Get all Roles' })
-    @ApiImplicitQuery({ name:'name', type: 'string', description:'product name',required: false})
-    @Get()
+    @ApiImplicitQuery({ name:'name', type: 'string', description:'role name',required: false})
+    @Get('roles')
     async findAll(@Query() query): Promise<RolesRO> {
-      //use redis
-      // await this.redisService.set('foo','hehe')
-      // console.log(await this.redisService.get('foo'))
       return await this.roleService.findAllRoles(query);
     }
+
+
 }
