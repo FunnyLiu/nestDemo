@@ -30,4 +30,4 @@ yarn.lock
 *.njsproj
 *.sln
 *.sw?
-.history
+.history/
