@@ -101,10 +101,12 @@ export class UserController {
     }
 
     @ApiOperation({ title: 'Delete user' })
-    @ApiImplicitParam({ name: 'slug', type: 'string' })
-    @Delete('users/:slug')
+    @ApiImplicitParam({ name: 'id', type: 'number' })
+    @Delete('users/:id')
+    @UseGuards(RolesGuard)
+    @Roles(ROLE_SUPER)
     async delete(@Param() params: any) {
-        return await this.userService.delete(params.slug);
+        return await this.userService.deleteUserById(params.id);
     }
 
 

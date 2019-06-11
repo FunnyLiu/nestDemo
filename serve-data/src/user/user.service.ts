@@ -105,6 +105,13 @@ export class UserService {
     }
 
 
+    async deleteUserById(id: number): Promise<void> {
+        const user = await this.userRepository.findOne(id,{relations:['roles']})
+        await this.userRepository.createQueryBuilder('user').relation(UserEntity,'roles').of(UserEntity).remove(user.roles)
+        await this.userRepository.remove(user)
+    }
+
+
     async findById(id: number): Promise<UserRO> {
         const user = await this.userRepository.findOne(id);
 
