@@ -11,7 +11,7 @@ import { SECRET } from './user.constants';
 import { validate } from 'class-validator';
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
 import { RoleEntity } from './role.entity';
-import { UpdateUserRoleDto } from './dto/update-user.dto';
+import { UpdateUserRoleDto, SelectUserRoles } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -106,8 +106,8 @@ export class UserService {
 
 
     async deleteUserById(id: number): Promise<void> {
-        const user = await this.userRepository.findOne(id,{relations:['roles']})
-        await this.userRepository.createQueryBuilder('user').relation(UserEntity,'roles').of(UserEntity).remove(user.roles)
+        const user = await this.userRepository.findOne(id, { relations: ['roles'] })
+        await this.userRepository.createQueryBuilder('user').relation(UserEntity, 'roles').of(UserEntity).remove(user.roles)
         await this.userRepository.remove(user)
     }
 
@@ -133,13 +133,39 @@ export class UserService {
 
         return this.buildUserRO(user);
     }
-
+    /**
+     * Set user role
+     * @param userId 
+     * @param method 
+     * @param roleData 
+     */
     async setRoleForUser(userId: number, method: 'add' | 'delete', roleData: UpdateUserRoleDto) {
         if (method == 'add') {
             await this.addRoleForUser(userId, roleData)
         } else {
             await this.deleteRoleForUser(userId, roleData)
         }
+    }
+    /**
+     * select roles list for user
+     * @param userId 
+     * @param roles 
+     */
+    async selectRolesForUser(userId: number, roles: SelectUserRoles): Promise<UserRO> {
+        let user = await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.roles', 'roles')
+            .where('user.id = :id', { id: userId })
+            .getOne()
+        if (!user) {
+            throw new WarnException('user id is not exists')
+        }
+        const rolesToSet = await this.roleRepository.findByIds(roles.roleIds)
+        if (!rolesToSet) {
+            throw new WarnException('role id is not exists')
+        }
+        user.roles = rolesToSet;
+        const newUser  = await this.userRepository.save(user)
+        return this.buildUserRO(newUser);
     }
 
 

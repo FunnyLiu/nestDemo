@@ -15,12 +15,13 @@ import {
 } from '@nestjs/swagger';
 import { UnhandleException } from '@/common/exceptions/unhandle.exception';
 import { CreateUserBody } from './dto/create-user.dto';
-import { UpdateUserBody, UpdateUserRoleDto, UpdateUserRoleBody } from './dto/update-user.dto';
+import { UpdateUserBody, UpdateUserRoleDto, UpdateUserRoleBody, SelectUserRoles, SelectUserRolesBody } from './dto/update-user.dto';
 import { LoginUserBody } from './dto/login-user.dto';
 import { AnyNaptrRecord } from 'dns';
 import { Roles } from '@/common/decorators/role.decorator';
 import { ROLE_SUPER } from '@/common/constants/role';
 import { RolesGuard } from '@/common/guards/role.guard';
+import { number } from '@hapi/joi';
 // import { ValidationPipe } from '@/common/pipes/validation.pipe';
 
 @ApiBearerAuth()
@@ -53,12 +54,12 @@ export class UserController {
     }
 
     @ApiOperation({ title: 'update role for user' })
-    @ApiImplicitQuery({ name: 'id', type: 'number' })
-    @ApiImplicitBody({ name: 'role', type: UpdateUserRoleBody })
-    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-    @Put('user/role')
-    async updateUserRole(@Query('id') userId: number, @Query('method') method: 'add' | 'delete', @Body('role') roleData: UpdateUserRoleDto) {
-        return await this.userService.setRoleForUser(userId, method, roleData)
+    @ApiImplicitParam({ name: 'id', type: 'number' })
+    @UseGuards(RolesGuard)
+    @Roles(ROLE_SUPER)
+    @Put('users/:id/roles')
+    async updateUserRole(@Param() params:any, @Body() body:SelectUserRoles) {
+        return await this.userService.selectRolesForUser(params.id, body)
     }
 
     @ApiOperation({ title: 'Get all users' })

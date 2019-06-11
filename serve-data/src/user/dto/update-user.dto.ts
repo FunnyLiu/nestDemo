@@ -23,3 +23,13 @@ export class UpdateUserRoleBody {
   @ApiModelProperty()
   role: UpdateUserRoleDto
 }
+export class SelectUserRoles {
+  @ApiModelProperty()
+  roleIds:number[]
+}
+
+export class SelectUserRolesBody {
+  @ApiModelProperty()
+  role:SelectUserRoles
+  
+}
