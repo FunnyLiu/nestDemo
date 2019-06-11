@@ -42,6 +42,10 @@ export class RoleService {
             qb.offset(query.offset);
         }
 
+        qb.select('role.id')
+        qb.addSelect('role.name')
+        
+
         const roles = await qb.getMany();
         return { roles, rolesCount };
     }
