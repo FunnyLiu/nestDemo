@@ -24,6 +24,7 @@
     "stop:pm2": "pm2 stop serve-data-prod"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^5.6.18",
     "@godaddy/terminus": "^4.1.0",
     "@hapi/joi": "^15.0.3",
     "@nestjs/common": "^6.0.0",

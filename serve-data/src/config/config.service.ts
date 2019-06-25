@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import * as Joi from '@hapi/joi'
 import * as fs from 'fs';
 import { EnvConfig } from './config.interface';
+import { ClientOptions } from '@elastic/elasticsearch';
 
 export class ConfigService {
     private readonly envConfig: EnvConfig;
@@ -10,6 +11,7 @@ export class ConfigService {
         const config = dotenv.parse(fs.readFileSync(filePath))
         this.envConfig = this.validateInput(config)
     }
+
 
     /**
      * Ensures all needed variables are set, and returns the validated JavaScript object
@@ -22,6 +24,8 @@ export class ConfigService {
                 .default('development'),
             PORT: Joi.number().default(80),
             API_AUTH_ENABLED: Joi.boolean().required(),
+            ELASTIC_SEARCH_NODE: Joi.string()
+                .default('http://localhost:9200')
         });
 
         const { error, value: validatedEnvConfig } = Joi.validate(
@@ -34,9 +38,19 @@ export class ConfigService {
         return validatedEnvConfig;
     }
 
-
+    /**
+     * get launch port
+     */
     public getPort(): number {
         return Number(this.envConfig.PORT)
+    }
+    /**
+     * get elastic search client options
+     */
+    public getESConfig():ClientOptions {
+        return {
+            node:this.envConfig.ELASTIC_SEARCH_NODE
+        }
     }
 
     get isAPiAuthEnabled(): boolean {
